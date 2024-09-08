@@ -1,4 +1,5 @@
 ﻿add_library("Cirno" STATIC
+  ../engine/src/Test.cpp
 )
 set_target_properties("Cirno" PROPERTIES OUTPUT_NAME Cirno)
 set_target_properties("Cirno" PROPERTIES
@@ -10,7 +11,7 @@ set_target_properties("Cirno" PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY_RELEASE "engine/bin/Release"
 )
 target_include_directories("Cirno" PRIVATE
-  /Users/atai/Dev/personal/cirno-engine-mk2/engine/include
+  D:/Dev/Personal/c_cpp/cirno-engine-mk2/engine/include
 )
 target_compile_definitions("Cirno" PRIVATE
   CIRNO_EXPORTS
@@ -43,4 +44,7 @@ target_compile_options("Cirno" PRIVATE
 target_link_libraries("Cirno"
   glfw
   glad
+)
+target_link_options("Cirno" PRIVATE
+  /NOLOGO
 )

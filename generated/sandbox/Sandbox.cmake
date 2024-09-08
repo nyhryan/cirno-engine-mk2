@@ -1,4 +1,5 @@
 ﻿add_executable("Sandbox"
+  ../sandbox/src/Sandbox.cpp
 )
 set_target_properties("Sandbox" PROPERTIES OUTPUT_NAME Sandbox)
 set_target_properties("Sandbox" PROPERTIES
@@ -13,7 +14,7 @@ add_dependencies("Sandbox"
   "Cirno"
 )
 target_include_directories("Sandbox" PRIVATE
-  /Users/atai/Dev/personal/cirno-engine-mk2/engine/include
+  D:/Dev/Personal/c_cpp/cirno-engine-mk2/engine/include
 )
 target_compile_definitions("Sandbox" PRIVATE
   $<$<CONFIG:Debug>:DEBUG>
@@ -44,4 +45,8 @@ target_compile_options("Sandbox" PRIVATE
 )
 target_link_libraries("Sandbox"
   Cirno
+)
+target_link_options("Sandbox" PRIVATE
+  /NOLOGO
+  $<$<CONFIG:Debug>:/DEBUG>
 )

@@ -3,8 +3,6 @@
 #include <Cirno/Application.hpp>
 #include <Cirno/Test.hpp>
 
-#include <cstdio>
-
 class Sandbox : public Cirno::Application {};
 
 Cirno::Application *Cirno::CreateApplication()

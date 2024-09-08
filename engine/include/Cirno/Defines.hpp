@@ -11,11 +11,9 @@
         #define CIRNO_API
     #endif
 #else
-    #if defined (_WIN32)
+    #if defined (_WIN32) && defined (CIRNO_SHARED)
         #define CIRNO_API __declspec(dllimport)
-    #elif defined (__APPLE__)
+    #else 
         #define CIRNO_API
-    #else
-        #error "Unsupported platform"
     #endif
 #endif
