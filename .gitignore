@@ -1,6 +1,7 @@
 .cache/
 build/
 premake5
+generated/
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,cmake,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,cmake,c++
