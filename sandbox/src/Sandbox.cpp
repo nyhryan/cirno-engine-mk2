@@ -1,14 +1,13 @@
 #include <Cirno/Cirno_main.hpp>
 
-#include <Cirno/Application.hpp>
-#include <Cirno/Test.hpp>
-
-class Sandbox : public Cirno::Application {};
+class Sandbox : public Cirno::Application
+{
+public:
+    Sandbox() {}
+    ~Sandbox() {}
+};
 
 Cirno::Application *Cirno::CreateApplication()
 {
-    Cirno::foo();
-
-    return nullptr;
-    // return new Sandbox();
+    return new Sandbox();
 }

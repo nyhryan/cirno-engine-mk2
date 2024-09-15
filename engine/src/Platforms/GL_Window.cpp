@@ -1,0 +1,118 @@
+#include "Cirno/Platforms/GL_Window.hpp"
+#include "Cirno/Window.hpp"
+#include "Cirno/Events/Event.hpp"
+#include "Cirno/Events/WindowEvent.hpp"
+#include "GLFW/glfw3.h"
+
+#include <cassert>
+
+template <typename T>
+inline static void g_SetUserPointer(GLFWwindow *win, T *ptr)
+{
+    glfwSetWindowUserPointer(win, static_cast<void *>(ptr));
+}
+
+template <typename T>
+inline static T *g_GetUserPointer(GLFWwindow *win)
+{
+    return static_cast<T *>(glfwGetWindowUserPointer(win));
+}
+
+namespace Cirno
+{
+
+static bool s_IsGLFWInitialized = false;
+
+Window *Window::Create(WindowProps &&props) { return new GLWindow(std::forward<WindowProps>(props)); }
+
+GLWindow::GLWindow(WindowProps &&props)
+{
+    m_Data.title = props.title;
+    m_Data.width = props.width;
+    m_Data.height = props.height;
+
+    Init();
+}
+
+GLWindow::~GLWindow()
+{
+    Shutdown();
+}
+
+void GLWindow::Init()
+{
+    if (!s_IsGLFWInitialized)
+    {
+        int isSuccess = glfwInit();
+        
+        assert((isSuccess == GLFW_TRUE) && "glfwInit failed...");
+
+        s_IsGLFWInitialized = true;
+    }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+
+    m_Window = glfwCreateWindow(
+        static_cast<int>(m_Data.width),
+        static_cast<int>(m_Data.height),
+        m_Data.title.c_str(),
+        nullptr,
+        nullptr);
+
+    glfwMakeContextCurrent(m_Window);
+    gladLoadGL(glfwGetProcAddress);
+
+    g_SetUserPointer<GLWindow::WindowData>(m_Window, &m_Data);
+    
+    glfwSwapInterval(1);
+    SetVSync(true);
+
+    glfwSetWindowSizeCallback(
+        m_Window,
+        [](GLFWwindow *win, int w, int h)
+        {
+            auto *windowData = g_GetUserPointer<GLWindow::WindowData>(win);
+            windowData->width = w;
+            windowData->height = h;
+            windowData->eventCallback(Cirno::CRTPWindowResizeEvent{w, h});
+        });
+
+    glfwSetWindowCloseCallback(
+        m_Window,
+        [](GLFWwindow *win)
+        {
+            auto *windowData = g_GetUserPointer<GLWindow::WindowData>(win);
+            // windowData->eventCallback(Cirno::WindowCloseEvent{});
+        });
+}
+
+void GLWindow::Shutdown()
+{
+    glfwDestroyWindow(m_Window);
+    glfwTerminate();
+}
+
+void GLWindow::OnUpdate()
+{
+    glfwSwapBuffers(m_Window);
+    glfwPollEvents();
+}
+
+void GLWindow::SetVSync(bool isEnable)
+{
+    if (isEnable)
+    {
+        glfwSwapInterval(1);
+        m_Data.isVSync = true;
+    }
+    else
+    {
+        glfwSwapInterval(0);
+        m_Data.isVSync = false;
+    }
+}
+
+}  // namespace Cirno

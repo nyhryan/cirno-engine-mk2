@@ -30,12 +30,11 @@ project "Cirno"
 
     buildStatic(true)
 
-    files { "engine/src/*.cpp", "engine/include/*.hpp" }
+    files { "engine/src/**.cpp", "engine/include/**.hpp" }
     includedirs { "engine/include" }
 
     links { "glfw", "glad" }
 
-    
 project "Sandbox"
     language "C++"
     cppdialect "C++20"
