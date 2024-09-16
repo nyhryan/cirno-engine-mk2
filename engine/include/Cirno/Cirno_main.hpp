@@ -1,5 +1,5 @@
-#include "Cirno/Application.hpp"
 #include "Cirno/Logger.hpp"
+#include "Cirno/Application.hpp"
 
 extern Cirno::Application *Cirno::CreateApplication();
 

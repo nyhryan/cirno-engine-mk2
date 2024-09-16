@@ -1,4 +1,4 @@
-#include <Cirno/Cirno_main.hpp>
+#include <Cirno/Cirno.hpp>
 
 class Sandbox : public Cirno::Application
 {

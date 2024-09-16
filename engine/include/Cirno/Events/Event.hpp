@@ -41,15 +41,13 @@ enum class EventCategory : uint8_t
 constexpr EventCategory operator|(EventCategory lhs, EventCategory rhs)
 {
     using underlying = typename std::underlying_type_t<EventCategory>;
-    return static_cast<EventCategory>(static_cast<underlying>(lhs) |
-                                      static_cast<underlying>(rhs));
+    return static_cast<EventCategory>(static_cast<underlying>(lhs) | static_cast<underlying>(rhs));
 }
 
 constexpr EventCategory operator&(EventCategory lhs, EventCategory rhs)
 {
     using underlying = typename std::underlying_type_t<EventCategory>;
-    return static_cast<EventCategory>(static_cast<underlying>(lhs) &
-                                      static_cast<underlying>(rhs));
+    return static_cast<EventCategory>(static_cast<underlying>(lhs) & static_cast<underlying>(rhs));
 }
 
 class CIRNO_API Event

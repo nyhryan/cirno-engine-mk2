@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Cirno/Defines.hpp"
+
 #include "Cirno/Events/Event.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
 #include "Cirno/Events/KeyEvent.hpp"
-#include "Cirno/Defines.hpp"
+
 #include "Cirno/Window.hpp"
 
 #include <memory>

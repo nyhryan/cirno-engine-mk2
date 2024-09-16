@@ -1,8 +1,8 @@
 #include "Cirno/Platforms/GL_Window.hpp"
 
-#include "Cirno/Window.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
 #include "Cirno/Events/KeyEvent.hpp"
+
 #include <cassert>
 
 template <typename T>
