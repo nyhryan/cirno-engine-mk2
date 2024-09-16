@@ -2,7 +2,7 @@
 
 #include "Cirno/Window.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
-
+#include "Cirno/Events/KeyEvent.hpp"
 #include <cassert>
 
 template <typename T>
@@ -22,7 +22,10 @@ namespace Cirno
 
 static bool s_IsGLFWInitialized = false;
 
-Window *Window::Create(WindowProps &&props) { return new GLWindow(std::forward<WindowProps>(props)); }
+Window *Window::Create(WindowProps &&props)
+{
+    return new GLWindow(std::forward<WindowProps>(props));
+}
 
 GLWindow::GLWindow(WindowProps &&props)
 {
@@ -33,17 +36,14 @@ GLWindow::GLWindow(WindowProps &&props)
     Init();
 }
 
-GLWindow::~GLWindow()
-{
-    Shutdown();
-}
+GLWindow::~GLWindow() { Shutdown(); }
 
 void GLWindow::Init()
 {
     if (!s_IsGLFWInitialized)
     {
         int isSuccess = glfwInit();
-        
+
         assert((isSuccess == GLFW_TRUE) && "glfwInit failed...");
 
         s_IsGLFWInitialized = true;
@@ -54,18 +54,15 @@ void GLWindow::Init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 
-    m_Window = glfwCreateWindow(
-        static_cast<int>(m_Data.width),
-        static_cast<int>(m_Data.height),
-        m_Data.title.c_str(),
-        nullptr,
-        nullptr);
+    m_Window = glfwCreateWindow(static_cast<int>(m_Data.width),
+                                static_cast<int>(m_Data.height),
+                                m_Data.title.c_str(), nullptr, nullptr);
 
     glfwMakeContextCurrent(m_Window);
     gladLoadGL(glfwGetProcAddress);
 
     g_SetUserPointer<GLWindow::WindowData>(m_Window, &m_Data);
-    
+
     glfwSwapInterval(1);
     SetVSync(true);
 
@@ -85,6 +82,36 @@ void GLWindow::Init()
         {
             auto *windowData = g_GetUserPointer<GLWindow::WindowData>(win);
             windowData->applicationOnEvent(Cirno::WindowCloseEvent{});
+        });
+
+    glfwSetKeyCallback(
+        m_Window,
+        [](GLFWwindow *win, int key, int scancode, int action, int mods)
+        {
+            auto *windowData = g_GetUserPointer<GLWindow::WindowData>(win);
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    windowData->applicationOnEvent(
+                        Cirno::KeyPressedEvent{scancode, 0});
+                    break;
+                }
+
+                case GLFW_RELEASE:
+                {
+                    windowData->applicationOnEvent(
+                        Cirno::KeyReleasedEvent{scancode});
+                    break;
+                }
+
+                case GLFW_REPEAT:
+                {
+                    windowData->applicationOnEvent(
+                        Cirno::KeyPressedEvent{scancode, 1});
+                    break;
+                }
+            }
         });
 }
 

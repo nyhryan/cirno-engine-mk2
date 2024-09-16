@@ -2,6 +2,7 @@
 
 #include "Cirno/Events/Event.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
+#include "Cirno/Events/KeyEvent.hpp"
 #include "Cirno/Defines.hpp"
 #include "Cirno/Window.hpp"
 
@@ -22,7 +23,7 @@ public:
 
     void Run();
 
-    void OnEvent(IEvent &&e);
+    void OnEvent(Event &&e);
     
 public:
     void SetIsRunning(bool isRun) noexcept { m_IsRunning = isRun; }
@@ -33,6 +34,9 @@ private:
 
     bool OnWindowResize(WindowResizeEvent &e);
     bool OnWindowClose(WindowCloseEvent &e);
+
+    bool OnKeyPressed(KeyPressedEvent &e);
+    bool OnKeyReleased(KeyReleasedEvent &e);
 
 private:
     bool m_IsRunning = false;

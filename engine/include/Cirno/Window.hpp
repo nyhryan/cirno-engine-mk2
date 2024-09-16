@@ -19,7 +19,7 @@ struct WindowProps
 class CIRNO_API Window
 {
 public:
-    using ApplicationOnEvent = std::function<void(IEvent &&)>;
+    using ApplicationOnEvent = std::function<void(Event &&)>;
 
     virtual ~Window() {}
 

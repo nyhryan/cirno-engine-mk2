@@ -11,7 +11,7 @@ std::shared_ptr<spdlog::logger> Logger::s_EngineLogger;
 
 void Logger::Init()
 {
-    spdlog::set_pattern("[%T] %^[%n - %l]%$: %v");
+    spdlog::set_pattern("[%T] %^[%n] [%L]%$: %v");
 
     s_InternalLogger = spdlog::stdout_color_mt("Internal");
     s_InternalLogger->set_level(spdlog::level::trace);

@@ -2,8 +2,12 @@
 
 #include "Cirno/Defines.hpp"
 
+#include <cstdint>
 #include <functional>
 #include <string>
+#include <type_traits>
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
 namespace Cirno
 {
@@ -16,54 +20,60 @@ enum class EventType
     WindowFocus,
     WindowLostFocus,
     WindowMoved,
+    KeyPressed,
+    KeyReleased,
+    MouseMoved,
+    MouseScrolled,
+    MouseButtonPressed,
+    MouseButtonReleased
 };
 
-enum class EventCategory
+enum class EventCategory : uint8_t
 {
     None = 0,
     Application = 1 << 0,
     Input = 1 << 1,
-    Keyboard = 1 << 2
+    Keyboard = 1 << 2,
+    Mouse = 1 << 3,
+    MouseButton = 1 << 4
 };
 
-class CIRNO_API IEvent
+constexpr EventCategory operator|(EventCategory lhs, EventCategory rhs)
+{
+    using underlying = typename std::underlying_type_t<EventCategory>;
+    return static_cast<EventCategory>(static_cast<underlying>(lhs) |
+                                      static_cast<underlying>(rhs));
+}
+
+constexpr EventCategory operator&(EventCategory lhs, EventCategory rhs)
+{
+    using underlying = typename std::underlying_type_t<EventCategory>;
+    return static_cast<EventCategory>(static_cast<underlying>(lhs) &
+                                      static_cast<underlying>(rhs));
+}
+
+class CIRNO_API Event
 {
     friend class EventDispatcher;
+
 public:
-    virtual ~IEvent() = default;
+    virtual ~Event() = default;
+
+    virtual EventType GetEventType() const = 0;
+    virtual EventCategory GetEventCategory() const = 0;
+    virtual std::string ToString() const = 0;
 
 protected:
     bool m_IsHandled = false;
 };
 
-template<typename T>
-class CIRNO_API BaseEvent : public IEvent
-{
-public:
-    EventType GetEventType() const
-    {
-        return T::GetEventTypeImpl();
-    }
-    EventCategory GetEventCategory() const
-    {
-        return T::GetEventCategoryImpl();
-    }
-    std::string ToString() const
-    {
-        return ToUnderlyingPtr()->ToStringImpl();
-    }
-
-private:
-    constexpr const T *ToUnderlyingPtr() const { return static_cast<const T *>(this); }
-    constexpr T *ToUnderlyingPtr() { return static_cast<T *>(this); }
-};
-
 class EventDispatcher
 {
-    template<typename T>
+    template <typename T>
     using EventCallback = std::function<bool(T &)>;
+
 public:
-    EventDispatcher(IEvent &e) : m_Event(e) {}
+    EventDispatcher(Event &e) : m_Event(e) {}
 
     template <typename DerivedEvent>
     bool Dispatch(EventCallback<DerivedEvent> &&cb)
@@ -77,7 +87,32 @@ public:
     }
 
 private:
-    IEvent &m_Event;
+    Event &m_Event;
 };
 
 }  // namespace Cirno
+
+/*
+
+template <typename T>
+struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<A, T>, char>> :
+    fmt::formatter<std::string> {
+  auto format(const A& a, format_context& ctx) const {
+    return formatter<std::string>::format(a.name(), ctx);
+  }
+};
+
+*/
+
+template <typename T>
+struct fmt::formatter<T,
+                      std::enable_if_t<std::is_base_of_v<Cirno::Event, T>, char>
+                      /* , typename Enable = void */
+                      > : fmt::formatter<std::string_view>
+{
+    template <typename Ctx>
+    auto format(const Cirno::Event &e, Ctx &ctx)
+    {
+        return fmt::format_to(ctx.out(), "{}", e.ToString());
+    }
+};

@@ -8,22 +8,20 @@
 namespace Cirno
 {
 
-class CIRNO_API WindowResizeEvent : public BaseEvent<WindowResizeEvent>
+class CIRNO_API WindowResizeEvent : public Event
 {
-    friend BaseEvent;
-
 public:
     WindowResizeEvent(int w, int h) : m_Width(w), m_Height(h) {}
 
 private:
-    static EventType GetEventTypeImpl() { return EventType::WindowResize; }
+    EventType GetEventType() const override { return EventType::WindowResize; }
 
-    static EventCategory GetEventCategoryImpl()
+    EventCategory GetEventCategory() const override
     {
         return EventCategory::Application;
     }
 
-    std::string ToStringImpl() const
+    std::string ToString() const override
     {
         return std::format("WindowResize: ({}, {})", m_Width, m_Height);
     }
@@ -33,20 +31,20 @@ private:
     int m_Height;
 };
 
-class CIRNO_API WindowCloseEvent : public BaseEvent<WindowCloseEvent>
+class CIRNO_API WindowCloseEvent : public Event
 {
 public:
-    static EventType GetEventType() { return EventType::WindowClose; }
+    EventType GetEventType() const override { return EventType::WindowClose; }
 
-    static EventCategory GetEventCategory()
+    EventCategory GetEventCategory() const override
     {
         return EventCategory::Application;
     }
 
-    std::string ToString() const
+    std::string ToString() const override
     {
         return "WindowClose";
     }
 };
 
-}
+} // namespace Cirno

@@ -1,8 +1,10 @@
+#include "Cirno/Logger.hpp"
+
 #include "Cirno/Application.hpp"
 #include "Cirno/Events/Event.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
+#include "Cirno/Events/KeyEvent.hpp"
 
-#include <iostream>
 #include <functional>
 
 namespace Cirno
@@ -27,7 +29,7 @@ void Application::Run()
     }
 }
 
-void Application::OnEvent(IEvent &&e)
+void Application::OnEvent(Event &&e)
 {
     EventDispatcher d{e};
 
@@ -39,19 +41,33 @@ void Application::OnEvent(IEvent &&e)
 
     dispatch(&Application::OnWindowResize);
     dispatch(&Application::OnWindowClose);
+    dispatch(&Application::OnKeyPressed);
+    dispatch(&Application::OnKeyReleased);
 }
 
 bool Application::OnWindowResize(WindowResizeEvent &e)
 {
-    std::cout << e.ToString() << "\n";
+    INTERNAL_DEBUG("{}", e);
     return true;
 }
 
 bool Application::OnWindowClose(WindowCloseEvent &e)
 {
-    std::cout << e.ToString() << "\n";
+    INTERNAL_DEBUG("{}", e);
     m_IsRunning = false;
 
+    return true;
+}
+
+bool Application::OnKeyPressed(KeyPressedEvent &e)
+{
+    INTERNAL_DEBUG("{}", e);
+    return true;
+}
+
+bool Application::OnKeyReleased(KeyReleasedEvent &e)
+{
+    INTERNAL_DEBUG("{}", e);
     return true;
 }
 
