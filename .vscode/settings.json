@@ -1,4 +1,8 @@
 {
-  "C_Cpp.intelliSenseEngine": "disabled",
-  "cmake.generator": "Ninja"
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "cmake.generator": "Ninja",
+    "Lua.diagnostics.disable": [
+        "undefined-global",
+        "lowercase-global"
+    ]
 }
