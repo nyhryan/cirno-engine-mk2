@@ -1,8 +1,7 @@
 #include "Cirno/Platforms/GL_Window.hpp"
+
 #include "Cirno/Window.hpp"
-#include "Cirno/Events/Event.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
-#include "GLFW/glfw3.h"
 
 #include <cassert>
 
@@ -77,7 +76,7 @@ void GLWindow::Init()
             auto *windowData = g_GetUserPointer<GLWindow::WindowData>(win);
             windowData->width = w;
             windowData->height = h;
-            windowData->eventCallback(Cirno::CRTPWindowResizeEvent{w, h});
+            windowData->applicationOnEvent(Cirno::WindowResizeEvent{w, h});
         });
 
     glfwSetWindowCloseCallback(
@@ -85,7 +84,7 @@ void GLWindow::Init()
         [](GLFWwindow *win)
         {
             auto *windowData = g_GetUserPointer<GLWindow::WindowData>(win);
-            // windowData->eventCallback(Cirno::WindowCloseEvent{});
+            windowData->applicationOnEvent(Cirno::WindowCloseEvent{});
         });
 }
 

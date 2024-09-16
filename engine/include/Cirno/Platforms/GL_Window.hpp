@@ -20,7 +20,9 @@ public:
     unsigned int GetWidth() const override { return m_Data.width; }
     unsigned int GetHeight() const override { return m_Data.height; }
 
-    void SetApplicationEventCallback(ApplicationEventCallback &&cb) override { m_Data.eventCallback = cb; }
+    void SetApplicationEventCallback(ApplicationOnEvent &&cb) override {
+        m_Data.applicationOnEvent = cb;
+    }
     void SetVSync(bool isEnable) override;
     bool IsVSync() const override { return m_Data.isVSync; } 
 
@@ -37,7 +39,7 @@ private:
         unsigned int width = 0;
         unsigned int height = 0;
         bool isVSync = true;
-        ApplicationEventCallback eventCallback;
+        ApplicationOnEvent applicationOnEvent;
     };
 
     WindowData m_Data;

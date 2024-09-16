@@ -1,13 +1,9 @@
 #pragma once
 
-#include <mach_debug/zone_info.h>
 #include "Cirno/Defines.hpp"
 
 #include <functional>
 #include <string>
-#include <sstream>
-#include <format>
-#include <iostream>
 
 namespace Cirno
 {
@@ -30,101 +26,58 @@ enum class EventCategory
     Keyboard = 1 << 2
 };
 
-class CIRNO_API CRTP
+class CIRNO_API IEvent
 {
-    friend class CRTPEventDispatcher;
+    friend class EventDispatcher;
 public:
-    virtual ~CRTP() = default;
+    virtual ~IEvent() = default;
+
 protected:
     bool m_IsHandled = false;
 };
 
 template<typename T>
-class CIRNO_API CRTPBaseEvent : public CRTP
+class CIRNO_API BaseEvent : public IEvent
 {
 public:
-    EventType GetEventType()
+    EventType GetEventType() const
     {
-        return ToUnderlyingPtr()->GetEventTypeImpl();
+        return T::GetEventTypeImpl();
     }
-    EventCategory GetEventCategory()
+    EventCategory GetEventCategory() const
     {
-        return ToUnderlyingPtr()->GetEventCategoryImpl();
+        return T::GetEventCategoryImpl();
     }
-    std::string ToString()
+    std::string ToString() const
     {
         return ToUnderlyingPtr()->ToStringImpl();
     }
 
 private:
+    constexpr const T *ToUnderlyingPtr() const { return static_cast<const T *>(this); }
     constexpr T *ToUnderlyingPtr() { return static_cast<T *>(this); }
-};
-
-class CRTPEventDispatcher
-{
-    template<typename T>
-    using EventCallback = std::function<bool(T &)>;
-public:
-    CRTPEventDispatcher(CRTP &e) : m_Event(e) {}
-
-    template<typename T>
-    bool Dispatch(EventCallback<T> &&cb)
-    {
-        try
-        {
-            T &toEventT = dynamic_cast<T &>(m_Event);
-            m_Event.m_IsHandled = cb(toEventT);
-            return true;
-        }
-        catch (std::exception &)
-        {
-            return false;
-        }
-    }
-
-private:
-    CRTP &m_Event;
-};
-
-class CIRNO_API BaseEvent
-{
-    friend class EventDispatcher;
-
-public:
-    virtual EventType GetEventType() const = 0;
-    virtual EventCategory GetEventCategory() const = 0;
-    virtual std::string ToString() const = 0;
-
-protected:
-    bool m_IsHandled = false;
 };
 
 class EventDispatcher
 {
-    template <typename EventT>
-    using EventCallback = std::function<bool(EventT &)>;
-
+    template<typename T>
+    using EventCallback = std::function<bool(T &)>;
 public:
-    EventDispatcher(BaseEvent &e) : m_Event(e) {}
+    EventDispatcher(IEvent &e) : m_Event(e) {}
 
-    template <typename EventT>
-    bool Dispatch(EventCallback<EventT> &&callback)
+    template <typename DerivedEvent>
+    bool Dispatch(EventCallback<DerivedEvent> &&cb)
     {
-        // try downcast to EventT
-        try
-        {
-            auto toEventT = dynamic_cast<EventT &>(m_Event);
-            m_Event.m_IsHandled = callback(toEventT);
-            return true;
-        }
-        catch (std::exception&)
-        {
+        DerivedEvent *toEventT = dynamic_cast<DerivedEvent *>(&m_Event);
+        if (toEventT == nullptr)
             return false;
-        }
+
+        m_Event.m_IsHandled = cb(*toEventT);
+        return true;
     }
 
 private:
-    BaseEvent &m_Event;
+    IEvent &m_Event;
 };
 
 }  // namespace Cirno

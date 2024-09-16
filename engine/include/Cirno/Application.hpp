@@ -5,7 +5,7 @@
 #include "Cirno/Defines.hpp"
 #include "Cirno/Window.hpp"
 
-#include <any>
+#include <memory>
 
 namespace Cirno
 {
@@ -22,16 +22,16 @@ public:
 
     void Run();
 
-    void OnEvent(BaseEvent &&e);
+    void OnEvent(IEvent &&e);
     
-    void CRTPOnEvent(CRTP &&e);
-
 public:
     void SetIsRunning(bool isRun) noexcept { m_IsRunning = isRun; }
 
 private:
+    template <typename T>
+    using EventCallback = bool (Cirno::Application::*)(T &);
+
     bool OnWindowResize(WindowResizeEvent &e);
-    bool OnCRTPWindowResize(CRTPWindowResizeEvent &e);
     bool OnWindowClose(WindowCloseEvent &e);
 
 private:
@@ -40,6 +40,7 @@ private:
 
 };
 
+// To be defined by client
 Application *CreateApplication();
 
 }  // namespace Cirno

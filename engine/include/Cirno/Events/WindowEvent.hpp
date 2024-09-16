@@ -3,42 +3,22 @@
 #include "Cirno/Defines.hpp"
 #include "Cirno/Events/Event.hpp"
 
+#include <format>
+
 namespace Cirno
 {
-class CIRNO_API WindowResizeEvent : public BaseEvent
+
+class CIRNO_API WindowResizeEvent : public BaseEvent<WindowResizeEvent>
 {
+    friend BaseEvent;
+
 public:
     WindowResizeEvent(int w, int h) : m_Width(w), m_Height(h) {}
 
-    EventType GetEventType() const { return EventType::WindowResize; }
-
-    EventCategory GetEventCategory() const
-    {
-        return EventCategory::Application;
-    }
-
-    std::string ToString() const
-    {
-        return std::format("WindowResize: ({}, {})", m_Width, m_Height);
-    }
-
 private:
-    int m_Width;
-    int m_Height;
-};
+    static EventType GetEventTypeImpl() { return EventType::WindowResize; }
 
-class CIRNO_API CRTPWindowResizeEvent : public CRTPBaseEvent<CRTPWindowResizeEvent>
-{
-    friend CRTPBaseEvent;
-public:
-    using value_type = CRTPWindowResizeEvent;
-    
-    CRTPWindowResizeEvent(int w, int h) : m_Width(w), m_Height(h) {}
-
-private:
-    EventType GetEventTypeImpl() const { return EventType::WindowResize; }
-
-    EventCategory GetEventCategoryImpl() const
+    static EventCategory GetEventCategoryImpl()
     {
         return EventCategory::Application;
     }
@@ -53,17 +33,17 @@ private:
     int m_Height;
 };
 
-class CIRNO_API WindowCloseEvent : public BaseEvent
+class CIRNO_API WindowCloseEvent : public BaseEvent<WindowCloseEvent>
 {
 public:
-    EventType GetEventType() const override { return EventType::WindowClose; }
+    static EventType GetEventType() { return EventType::WindowClose; }
 
-    EventCategory GetEventCategory() const override
+    static EventCategory GetEventCategory()
     {
         return EventCategory::Application;
     }
 
-    std::string ToString() const override
+    std::string ToString() const
     {
         return "WindowClose";
     }

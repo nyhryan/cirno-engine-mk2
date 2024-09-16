@@ -19,7 +19,7 @@ struct WindowProps
 class CIRNO_API Window
 {
 public:
-    using ApplicationEventCallback = std::function<void(CRTP &&)>;
+    using ApplicationOnEvent = std::function<void(IEvent &&)>;
 
     virtual ~Window() {}
 
@@ -27,7 +27,7 @@ public:
     virtual unsigned int GetWidth() const = 0;
     virtual unsigned int GetHeight() const = 0;
 
-    virtual void SetApplicationEventCallback(ApplicationEventCallback &&cb) = 0;
+    virtual void SetApplicationEventCallback(ApplicationOnEvent &&cb) = 0;
 
     virtual void SetVSync(bool isEnabled) = 0;
     virtual bool IsVSync() const = 0;
