@@ -33,7 +33,7 @@ project "Cirno"
     files { "engine/src/**.cpp", "engine/include/**.hpp" }
     includedirs { "engine/include" }
 
-    links { "glfw", "glad" }
+    links { "glfw", "glad", "spdlog" }
 
 project "Sandbox"
     language "C++"
