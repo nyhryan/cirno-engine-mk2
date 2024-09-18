@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Cirno/Defines.hpp"
 #include "Cirno/Events/Event.hpp"
 
 #include <functional>
 #include <string>
+
 
 namespace Cirno
 {
@@ -23,14 +23,16 @@ public:
 
     virtual ~Window() {}
 
-    virtual void OnUpdate() = 0;
-    virtual unsigned int GetWidth() const = 0;
-    virtual unsigned int GetHeight() const = 0;
+    virtual void OnUpdateStart() = 0;
+    virtual void OnUpdateEnd() = 0;
+    [[nodiscard]] virtual void *GetNativeWindow() const = 0;
+    [[nodiscard]] virtual unsigned int GetWidth() const = 0;
+    [[nodiscard]] virtual unsigned int GetHeight() const = 0;
 
     virtual void SetApplicationEventCallback(ApplicationOnEvent &&cb) = 0;
 
     virtual void SetVSync(bool isEnabled) = 0;
-    virtual bool IsVSync() const = 0;
+    [[nodiscard]] virtual bool IsVSync() const = 0;
 
     static Window *Create(WindowProps &&props = WindowProps{});
 };

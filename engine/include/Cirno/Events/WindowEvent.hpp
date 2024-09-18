@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Cirno/Defines.hpp"
 #include "Cirno/Events/Event.hpp"
 
 #include <format>
@@ -14,14 +13,17 @@ public:
     WindowResizeEvent(int w, int h) : m_Width(w), m_Height(h) {}
 
 private:
-    EventType GetEventType() const override { return EventType::WindowResize; }
+    [[nodiscard]] EventType GetEventType() const override
+    {
+        return EventType::WindowResize;
+    }
 
-    EventCategory GetEventCategory() const override
+    [[nodiscard]] EventCategory GetEventCategory() const override
     {
         return EventCategory::Application;
     }
 
-    std::string ToString() const override
+    [[nodiscard]] std::string ToString() const override
     {
         return std::format("WindowResize: ({}, {})", m_Width, m_Height);
     }
@@ -34,17 +36,20 @@ private:
 class CIRNO_API WindowCloseEvent : public Event
 {
 public:
-    EventType GetEventType() const override { return EventType::WindowClose; }
+    [[nodiscard]] EventType GetEventType() const override
+    {
+        return EventType::WindowClose;
+    }
 
-    EventCategory GetEventCategory() const override
+    [[nodiscard]] EventCategory GetEventCategory() const override
     {
         return EventCategory::Application;
     }
 
-    std::string ToString() const override
+    [[nodiscard]] std::string ToString() const override
     {
         return "WindowClose";
     }
 };
 
-} // namespace Cirno
+}  // namespace Cirno

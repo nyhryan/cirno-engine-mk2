@@ -7,7 +7,4 @@ public:
     ~Sandbox() {}
 };
 
-Cirno::Application *Cirno::CreateApplication()
-{
-    return new Sandbox();
-}
+Cirno::Application *Cirno::CreateApplication() { return new Sandbox(); }

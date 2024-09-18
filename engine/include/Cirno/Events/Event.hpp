@@ -6,8 +6,8 @@
 #include <functional>
 #include <string>
 #include <type_traits>
+
 #include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
 
 namespace Cirno
 {
@@ -57,9 +57,10 @@ class CIRNO_API Event
 public:
     virtual ~Event() = default;
 
-    virtual EventType GetEventType() const = 0;
-    virtual EventCategory GetEventCategory() const = 0;
-    virtual std::string ToString() const = 0;
+    [[nodiscard]] bool IsHandled() const { return m_IsHandled; }
+    [[nodiscard]] virtual EventType GetEventType() const = 0;
+    [[nodiscard]] virtual EventCategory GetEventCategory() const = 0;
+    [[nodiscard]] virtual std::string ToString() const = 0;
 
 protected:
     bool m_IsHandled = false;
@@ -89,18 +90,6 @@ private:
 };
 
 }  // namespace Cirno
-
-/*
-
-template <typename T>
-struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<A, T>, char>> :
-    fmt::formatter<std::string> {
-  auto format(const A& a, format_context& ctx) const {
-    return formatter<std::string>::format(a.name(), ctx);
-  }
-};
-
-*/
 
 template <typename T>
 struct fmt::formatter<T,

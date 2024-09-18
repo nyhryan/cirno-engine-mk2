@@ -2,9 +2,7 @@
 
 #include "Cirno/Window.hpp"
 
-#define GLFW_INCLUDE_NONE
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
 
 namespace Cirno
 {
@@ -15,16 +13,18 @@ public:
     GLWindow(WindowProps &&props);
     ~GLWindow();
 
-    void OnUpdate() override;
+    void OnUpdateStart() override;
+    void OnUpdateEnd() override;
 
-    unsigned int GetWidth() const override { return m_Data.width; }
-    unsigned int GetHeight() const override { return m_Data.height; }
+    [[nodiscard]] void *GetNativeWindow() const override { return m_Window; }
+    [[nodiscard]] unsigned int GetWidth() const override { return m_Data.width; }
+    [[nodiscard]] unsigned int GetHeight() const override { return m_Data.height; }
 
     void SetApplicationEventCallback(ApplicationOnEvent &&cb) override {
         m_Data.applicationOnEvent = cb;
     }
     void SetVSync(bool isEnable) override;
-    bool IsVSync() const override { return m_Data.isVSync; } 
+    [[nodiscard]] bool IsVSync() const override { return m_Data.isVSync; } 
 
 private:
     void Init();

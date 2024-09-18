@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Cirno/Defines.hpp"
-
-#include "Cirno/Events/Event.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
 #include "Cirno/Events/KeyEvent.hpp"
-
 #include "Cirno/Window.hpp"
+#include "Cirno/LayerStack.hpp"
+#include "Cirno/Imgui/ImguiLayer.hpp"
 
 #include <memory>
 
@@ -17,17 +15,26 @@ class CIRNO_API Application
 {
 public:
     Application();
-
     Application(const Application &) = delete;
     Application &operator=(const Application &) = delete;
 
+    [[nodiscard]] static Application &GetInstance() noexcept
+    {
+        return *s_Instance;
+    }
+
     virtual ~Application();
 
+public:
     void Run();
 
     void OnEvent(Event &&e);
-    
+
+    void PushLayer(Layer *layer);
+    void PushOverlay(Layer *overlay);
+
 public:
+    [[nodiscard]] Window &GetWindow() const { return *m_Window; }
     void SetIsRunning(bool isRun) noexcept { m_IsRunning = isRun; }
 
 private:
@@ -43,7 +50,10 @@ private:
 private:
     bool m_IsRunning = false;
     std::unique_ptr<Window> m_Window;
+    LayerStack m_LayerStack;
+    std::shared_ptr<ImguiLayer> m_ImguiLayer;
 
+    static Application *s_Instance;
 };
 
 // To be defined by client

@@ -4,6 +4,7 @@
 
 #include <string>
 #include <string_view>
+#include <format>
 #include <utility>
 #include <memory>
 #include <cstddef>

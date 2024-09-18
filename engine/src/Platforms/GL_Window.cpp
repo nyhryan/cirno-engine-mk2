@@ -1,7 +1,12 @@
 #include "Cirno/Platforms/GL_Window.hpp"
 
+#include "Cirno/Application.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
 #include "Cirno/Events/KeyEvent.hpp"
+
+#define GLFW_INCLUDE_NONE
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 #include <cassert>
 
@@ -76,6 +81,13 @@ void GLWindow::Init()
             windowData->applicationOnEvent(Cirno::WindowResizeEvent{w, h});
         });
 
+    glfwSetFramebufferSizeCallback(
+        m_Window,
+        [](GLFWwindow *win, int w, int h)
+        {
+            glViewport(0, 0, w, h);
+        });
+
     glfwSetWindowCloseCallback(
         m_Window,
         [](GLFWwindow *win)
@@ -121,10 +133,19 @@ void GLWindow::Shutdown()
     glfwTerminate();
 }
 
-void GLWindow::OnUpdate()
+void GLWindow::OnUpdateStart()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    auto &win = Application::GetInstance().GetWindow();
+    glViewport(0, 0, win.GetWidth(), win.GetHeight());
+
+    glfwPollEvents();
+}
+
+void GLWindow::OnUpdateEnd()
 {
     glfwSwapBuffers(m_Window);
-    glfwPollEvents();
 }
 
 void GLWindow::SetVSync(bool isEnable)
