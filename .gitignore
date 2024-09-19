@@ -4,7 +4,7 @@ build/
 cmake-build-*/
 generated/
 .vs/
-
+.idea/
 premake5
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,cmake,c++
