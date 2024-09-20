@@ -1,3 +1,4 @@
+#include "Cirno/Imgui/ImguiLayer.hpp"
 #include "Cirno/Logger.hpp"
 
 #include "Cirno/Application.hpp"
@@ -13,6 +14,7 @@ namespace Cirno
 {
 Application *Application::s_Instance = nullptr;
 static bool s_IsAppCreated = false;
+static bool s_IsImguiLayerCreate = false;
 
 Application::Application()
 {
@@ -25,8 +27,11 @@ Application::Application()
     m_Window->SetApplicationEventCallback(
         std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-    m_ImguiLayer = std::make_shared<ImguiLayer>(ImguiLayer());
-    PushOverlay(m_ImguiLayer.get());
+    // m_ImguiLayer = std::make_shared<ImguiLayer>();
+    CIRNO_ASSERT(!s_IsImguiLayerCreate, "Imgui layer already created");
+    m_ImguiLayer = new ImguiLayer();
+    PushOverlay(m_ImguiLayer);
+    s_IsImguiLayerCreate = true;
 
     m_IsRunning = true;
 }
@@ -40,11 +45,11 @@ void Application::Run()
         m_Window->OnUpdateStart();
 
         std::for_each(m_LayerStack.begin(), m_LayerStack.end(),
-                      [](Layer *layer) { layer->OnUpdate(); });
+                      [](auto layer) { layer->OnUpdate(); });
 
         m_ImguiLayer->OnBegin();
         std::for_each(m_LayerStack.begin(), m_LayerStack.end(),
-                      [](Layer *layer) { layer->OnImguiDraw(); });
+                      [](auto layer) { layer->OnImguiDraw(); });
         m_ImguiLayer->OnEnd();
 
 

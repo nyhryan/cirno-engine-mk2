@@ -51,7 +51,7 @@ private:
     bool m_IsRunning = false;
     std::unique_ptr<Window> m_Window;
     LayerStack m_LayerStack;
-    std::shared_ptr<ImguiLayer> m_ImguiLayer;
+    ImguiLayer *m_ImguiLayer = nullptr;
 
     static Application *s_Instance;
 };

@@ -4,65 +4,61 @@
 #include "Cirno/Defines.hpp"
 
 #include <vector>
-#include <algorithm>
 
 namespace Cirno
 {
 class CIRNO_API LayerStack
 {
+    using LayerPtr = Layer*;
+    using LayerVector = std::vector<LayerPtr>;
 public:
     LayerStack() = default;
-    ~LayerStack()
-    {
-        std::for_each(m_Layers.begin(), m_Layers.end(), [](Layer *layer) {
-            delete layer;
-        });
-    }
+    ~LayerStack();
 
 public:
-    void PushLayer(Layer *layer);
-    void PopLayer(Layer *layer);
+    void PushLayer(LayerPtr layer);
+    void PopLayer(LayerPtr layer);
 
-    void PushOverlay(Layer *overlay);
-    void PopOverlay(Layer *overlay);
+    void PushOverlay(LayerPtr overlay);
+    void PopOverlay(LayerPtr overlay);
 
-    [[nodiscard]] std::vector<Layer *>::iterator begin()
+    [[nodiscard]] LayerVector::iterator begin()
     {
         return m_Layers.begin();
     }
-    [[nodiscard]] std::vector<Layer *>::iterator end()
+    [[nodiscard]] LayerVector::iterator end()
     {
         return m_Layers.end();
     }
 
-    [[nodiscard]] std::vector<Layer *>::const_iterator cbegin() const
+    [[nodiscard]] LayerVector::const_iterator cbegin() const
     {
         return m_Layers.begin();
     }
-    [[nodiscard]] std::vector<Layer *>::const_iterator cend() const
+    [[nodiscard]] LayerVector::const_iterator cend() const
     {
         return m_Layers.end();
     }
 
-    [[nodiscard]] std::vector<Layer *>::reverse_iterator rbegin()
+    [[nodiscard]] LayerVector::reverse_iterator rbegin()
     {
         return m_Layers.rbegin();
     }
-    [[nodiscard]] std::vector<Layer *>::reverse_iterator rend()
+    [[nodiscard]] LayerVector::reverse_iterator rend()
     {
         return m_Layers.rend();
     }
 
-    [[nodiscard]] std::vector<Layer *>::const_reverse_iterator crbegin() const
+    [[nodiscard]] LayerVector::const_reverse_iterator crbegin() const
     {
         return m_Layers.rbegin();
     }
-    [[nodiscard]] std::vector<Layer *>::const_reverse_iterator crend() const
+    [[nodiscard]] LayerVector::const_reverse_iterator crend() const
     {
         return m_Layers.rend();
     }
 
 private:
-    std::vector<Layer *> m_Layers;
+    LayerVector m_Layers;
 };
 }  // namespace Cirno
