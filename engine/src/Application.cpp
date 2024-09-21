@@ -7,7 +7,6 @@
 #include "Cirno/Events/KeyEvent.hpp"
 
 #include <functional>
-#include <algorithm>
 #include <cassert>
 
 namespace Cirno
@@ -20,23 +19,24 @@ Application::Application()
 {
     // set singleton instance
     CIRNO_ASSERT(!s_IsAppCreated, "Application already created");
-    s_Instance = this;
+    {
+        s_Instance = this;
+    }
     s_IsAppCreated = true;
 
     m_Window = std::unique_ptr<Window>(Window::Create());
     m_Window->SetApplicationEventCallback(
         std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-    // m_ImguiLayer = std::make_shared<ImguiLayer>();
     CIRNO_ASSERT(!s_IsImguiLayerCreate, "Imgui layer already created");
-    m_ImguiLayer = new ImguiLayer();
-    PushOverlay(m_ImguiLayer);
+    {
+        m_ImguiLayer = new ImguiLayer();
+        PushOverlay(m_ImguiLayer);
+    }
     s_IsImguiLayerCreate = true;
 
     m_IsRunning = true;
 }
-
-Application::~Application() {}
 
 void Application::Run()
 {
@@ -44,14 +44,8 @@ void Application::Run()
     {
         m_Window->OnUpdateStart();
 
-        std::for_each(m_LayerStack.begin(), m_LayerStack.end(),
-                      [](auto layer) { layer->OnUpdate(); });
-
-        m_ImguiLayer->OnBegin();
-        std::for_each(m_LayerStack.begin(), m_LayerStack.end(),
-                      [](auto layer) { layer->OnImguiDraw(); });
-        m_ImguiLayer->OnEnd();
-
+        UpdateLayers();
+        UpdateImguiLayer();
 
         m_Window->OnUpdateEnd();
     }
@@ -61,17 +55,18 @@ void Application::OnEvent(Event &&e)
 {
     EventDispatcher d{e};
 
-    auto dispatch = [&]<typename T>(Application::EventCallback<T> fn)
+    auto dispatchEvent = [&]<typename T>(Application::EventCallback<T> fn)
     {
         d.Dispatch<T>(std::bind(std::forward<Application::EventCallback<T>>(fn),
                                 this, std::placeholders::_1));
     };
 
-    dispatch(&Application::OnWindowResize);
-    dispatch(&Application::OnWindowClose);
-    dispatch(&Application::OnKeyPressed);
-    dispatch(&Application::OnKeyReleased);
+    dispatchEvent(&Application::OnWindowResize);
+    dispatchEvent(&Application::OnWindowClose);
+    dispatchEvent(&Application::OnKeyPressed);
+    dispatchEvent(&Application::OnKeyReleased);
 
+    // pass events from top to bottom laayer
     for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
     {
         (*it)->OnEvent(e);

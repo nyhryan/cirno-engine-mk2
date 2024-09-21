@@ -1,15 +1,14 @@
 #pragma once
 
 #include "Cirno/Layer.hpp"
-#include "Cirno/Logger.hpp"
 
 namespace Cirno
 {
 class ImguiLayer : public Layer
 {
 public:
-    ImguiLayer();
-    virtual ~ImguiLayer();
+    ImguiLayer() : Layer("ImguiLayer") {}
+    virtual ~ImguiLayer() = default;
 
     virtual void OnAttach() override;
     virtual void OnDetach() override;

@@ -7,6 +7,7 @@
 #include "Cirno/Imgui/ImguiLayer.hpp"
 
 #include <memory>
+#include <algorithm>
 
 namespace Cirno
 {
@@ -23,7 +24,7 @@ public:
         return *s_Instance;
     }
 
-    virtual ~Application();
+    virtual ~Application() = default;
 
 public:
     void Run();
@@ -34,18 +35,31 @@ public:
     void PushOverlay(Layer *overlay);
 
 public:
-    [[nodiscard]] Window &GetWindow() const { return *m_Window; }
+    [[nodiscard]] Window &GetWindow() const { return *m_Window.get(); }
     void SetIsRunning(bool isRun) noexcept { m_IsRunning = isRun; }
 
-private:
+public:
     template <typename T>
     using EventCallback = bool (Cirno::Application::*)(T &);
 
+private:
     bool OnWindowResize(WindowResizeEvent &e);
     bool OnWindowClose(WindowCloseEvent &e);
 
     bool OnKeyPressed(KeyPressedEvent &e);
     bool OnKeyReleased(KeyReleasedEvent &e);
+
+private:
+    void UpdateLayers()
+    {
+        std::for_each(m_LayerStack.begin(), m_LayerStack.end(), [](auto *layer) { layer->OnUpdate(); });
+    }
+    void UpdateImguiLayer()
+    {
+        m_ImguiLayer->OnBegin();
+        std::for_each(m_LayerStack.begin(), m_LayerStack.end(), [](auto *layer) { layer->OnImguiDraw(); });
+        m_ImguiLayer->OnEnd();
+    }
 
 private:
     bool m_IsRunning = false;

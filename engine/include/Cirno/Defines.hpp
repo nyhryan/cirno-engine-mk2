@@ -1,3 +1,5 @@
+#pragma once
+
 #if defined (CIRNO_EXPORT)
     #if defined (CIRNO_SHARED)
         #error "shared lib not supported yet"

@@ -1,6 +1,5 @@
 #include "Cirno/Imgui/ImguiLayer.hpp"
 #include "Cirno/Application.hpp"
-#include "Cirno/Logger.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -10,14 +9,6 @@
 
 namespace Cirno
 {
-
-ImguiLayer::ImguiLayer() : Layer("ImguiLayer")
-{
-}
-
-ImguiLayer::~ImguiLayer()
-{
-}
 
 void ImguiLayer::OnAttach()
 {
@@ -77,6 +68,8 @@ void ImguiLayer::OnEnd()
     }
 }
 
-void ImguiLayer::OnEvent(Event& event) {}
+void ImguiLayer::OnEvent(Event& event)
+{
+}
 
 }  // namespace Cirno
