@@ -7,7 +7,6 @@
 #include "Cirno/Imgui/ImguiLayer.hpp"
 
 #include <memory>
-#include <algorithm>
 
 namespace Cirno
 {
@@ -50,16 +49,8 @@ private:
     bool OnKeyReleased(KeyReleasedEvent &e);
 
 private:
-    void UpdateLayers()
-    {
-        std::for_each(m_LayerStack.begin(), m_LayerStack.end(), [](auto *layer) { layer->OnUpdate(); });
-    }
-    void UpdateImguiLayer()
-    {
-        m_ImguiLayer->OnBegin();
-        std::for_each(m_LayerStack.begin(), m_LayerStack.end(), [](auto *layer) { layer->OnImguiDraw(); });
-        m_ImguiLayer->OnEnd();
-    }
+    void UpdateLayers();
+    void UpdateImguiLayer();
 
 private:
     bool m_IsRunning = false;

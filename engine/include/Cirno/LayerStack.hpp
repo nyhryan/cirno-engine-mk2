@@ -9,56 +9,31 @@ namespace Cirno
 {
 class CIRNO_API LayerStack
 {
-    using LayerPtr = Layer*;
-    using LayerVector = std::vector<LayerPtr>;
 public:
+   
     LayerStack() = default;
     ~LayerStack();
 
 public:
-    void PushLayer(LayerPtr layer);
-    void PopLayer(LayerPtr layer);
+    void PushLayer(Layer * layer);
+    void PopLayer(Layer * layer);
 
-    void PushOverlay(LayerPtr overlay);
-    void PopOverlay(LayerPtr overlay);
+    void PushOverlay(Layer * overlay);
+    void PopOverlay(Layer * overlay);
 
-    [[nodiscard]] LayerVector::iterator begin()
-    {
-        return m_Layers.begin();
-    }
-    [[nodiscard]] LayerVector::iterator end()
-    {
-        return m_Layers.end();
-    }
+    [[nodiscard]] auto begin() noexcept { return m_Layers.begin(); }
+    [[nodiscard]] auto end() noexcept { return m_Layers.end(); }
 
-    [[nodiscard]] LayerVector::const_iterator cbegin() const
-    {
-        return m_Layers.begin();
-    }
-    [[nodiscard]] LayerVector::const_iterator cend() const
-    {
-        return m_Layers.end();
-    }
+    [[nodiscard]] auto cbegin() const noexcept { return m_Layers.cbegin(); }
+    [[nodiscard]] auto cend() const noexcept { return m_Layers.cend(); }
 
-    [[nodiscard]] LayerVector::reverse_iterator rbegin()
-    {
-        return m_Layers.rbegin();
-    }
-    [[nodiscard]] LayerVector::reverse_iterator rend()
-    {
-        return m_Layers.rend();
-    }
+    [[nodiscard]] auto rbegin() noexcept { return m_Layers.rbegin(); }
+    [[nodiscard]] auto rend() noexcept { return m_Layers.rend(); }
 
-    [[nodiscard]] LayerVector::const_reverse_iterator crbegin() const
-    {
-        return m_Layers.rbegin();
-    }
-    [[nodiscard]] LayerVector::const_reverse_iterator crend() const
-    {
-        return m_Layers.rend();
-    }
+    [[nodiscard]] auto crbegin() const noexcept { return m_Layers.crbegin(); }
+    [[nodiscard]] auto crend() const noexcept { return m_Layers.crend(); }
 
 private:
-    LayerVector m_Layers;
+    std::vector<Layer *> m_Layers;
 };
 }  // namespace Cirno

@@ -113,4 +113,16 @@ bool Application::OnKeyReleased(KeyReleasedEvent &e)
     return true;
 }
 
+void Application::UpdateLayers()
+{
+    std::for_each(m_LayerStack.begin(), m_LayerStack.end(), [](auto *layer) { layer->OnUpdate(); });
+}
+
+void Application::UpdateImguiLayer()
+{
+    m_ImguiLayer->OnBegin();
+    std::for_each(m_LayerStack.begin(), m_LayerStack.end(), [](auto *layer) { layer->OnImguiDraw(); });
+    m_ImguiLayer->OnEnd();
+}
+
 }  // namespace Cirno
