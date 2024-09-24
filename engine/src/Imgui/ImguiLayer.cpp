@@ -1,8 +1,6 @@
 #include "Cirno/Imgui/ImguiLayer.hpp"
 #include "Cirno/Application.hpp"
 
-#include <GLFW/glfw3.h>
-
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -19,9 +17,10 @@ void ImguiLayer::OnAttach()
     io.ConfigFlags |=
         ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;  // Enable Multi-Viewport
+    io.ConfigFlags |=
+        ImGuiConfigFlags_ViewportsEnable;  // Enable Multi-Viewport
 
-    ImGuiStyle &style = ImGui::GetStyle();
+    ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
@@ -30,7 +29,7 @@ void ImguiLayer::OnAttach()
 
     Application& app = Application::GetInstance();
     ImGui_ImplGlfw_InitForOpenGL(
-        static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow()), true);
+        static_cast<GLFWwindow*>(m_RefWindow->GetNativeWindow()), true);
     ImGui_ImplOpenGL3_Init("#version 410");
 }
 
@@ -56,8 +55,10 @@ void ImguiLayer::OnEnd()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     // Update and Render additional Platform Windows
-    // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-    //  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+    // (Platform functions may change the current OpenGL context, so we
+    // save/restore it to make it easier to paste this code elsewhere.
+    //  For this specific demo app we could also call
+    //  glfwMakeContextCurrent(window) directly)
     ImGuiIO& io = ImGui::GetIO();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
@@ -68,8 +69,6 @@ void ImguiLayer::OnEnd()
     }
 }
 
-void ImguiLayer::OnEvent(Event& event)
-{
-}
+void ImguiLayer::OnEvent(Event& event) {}
 
 }  // namespace Cirno

@@ -4,10 +4,6 @@
 #include "Cirno/Events/WindowEvent.hpp"
 #include "Cirno/Events/KeyEvent.hpp"
 
-#define GLFW_INCLUDE_NONE
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
-
 #include <cassert>
 
 template <typename T>
@@ -137,8 +133,8 @@ void GLWindow::OnUpdateStart()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    auto &win = Application::GetInstance().GetWindow();
-    glViewport(0, 0, win.GetWidth(), win.GetHeight());
+    // auto &win = Application::GetInstance().GetWindow();
+    glViewport(0, 0, m_Data.width, m_Data.height);
 
     glfwPollEvents();
 }

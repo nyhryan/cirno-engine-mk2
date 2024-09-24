@@ -6,7 +6,7 @@
 #include <spdlog/spdlog.h>
 #include <memory>
 
-namespace Cirno
+namespace CIRNO_API Cirno
 {
 
 class Logger

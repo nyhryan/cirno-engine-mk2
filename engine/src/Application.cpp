@@ -1,16 +1,19 @@
-#include "Cirno/Imgui/ImguiLayer.hpp"
-#include "Cirno/Logger.hpp"
-
 #include "Cirno/Application.hpp"
+
+#include "Cirno/Logger.hpp"
+#include "Cirno/Imgui/ImguiLayer.hpp"
+
 #include "Cirno/Events/Event.hpp"
 #include "Cirno/Events/WindowEvent.hpp"
 #include "Cirno/Events/KeyEvent.hpp"
 
 #include <functional>
-#include <cassert>
+
+struct GLFWwindow;
 
 namespace Cirno
 {
+
 Application *Application::s_Instance = nullptr;
 static bool s_IsAppCreated = false;
 static bool s_IsImguiLayerCreate = false;
@@ -18,11 +21,12 @@ static bool s_IsImguiLayerCreate = false;
 Application::Application()
 {
     // set singleton instance
-    CIRNO_ASSERT(!s_IsAppCreated, "Application already created");
-    {
-        s_Instance = this;
-    }
-    s_IsAppCreated = true;
+    // CIRNO_ASSERT(!s_IsAppCreated, "Application already created");
+    // {
+    //     auto &inst = Instance();
+    // }
+    // s_IsAppCreated = true;
+    // s_Instance = this;
 
     m_Window = std::unique_ptr<Window>(Window::Create());
     m_Window->SetApplicationEventCallback(
@@ -30,7 +34,7 @@ Application::Application()
 
     CIRNO_ASSERT(!s_IsImguiLayerCreate, "Imgui layer already created");
     {
-        m_ImguiLayer = new ImguiLayer();
+        m_ImguiLayer = new ImguiLayer(m_Window.get());
         PushOverlay(m_ImguiLayer);
     }
     s_IsImguiLayerCreate = true;

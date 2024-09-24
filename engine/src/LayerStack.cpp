@@ -10,9 +10,9 @@ LayerStack::~LayerStack()
         delete layer;
 }
 
-inline void LayerStack::PushLayer(Layer * layer) { m_Layers.emplace(m_Layers.begin(), layer); }
+void LayerStack::PushLayer(Layer * layer) { m_Layers.emplace(m_Layers.begin(), layer); }
 
-inline void LayerStack::PopLayer(Layer * layer)
+void LayerStack::PopLayer(Layer * layer)
 {
     auto it = std::remove(begin(), end(), layer);
     if (it != m_Layers.end())
@@ -22,8 +22,8 @@ inline void LayerStack::PopLayer(Layer * layer)
     }
 }
 
-inline void LayerStack::PushOverlay(Layer * overlay) { m_Layers.emplace_back(overlay); }
+void LayerStack::PushOverlay(Layer * overlay) { m_Layers.emplace_back(overlay); }
 
-inline void LayerStack::PopOverlay(Layer * overlay) { PopLayer(overlay); }
+void LayerStack::PopOverlay(Layer * overlay) { PopLayer(overlay); }
 
 }  // namespace Cirno

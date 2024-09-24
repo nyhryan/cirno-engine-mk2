@@ -23,6 +23,12 @@ public:
         return *s_Instance;
     }
 
+    [[nodiscard]] static Application &Instance()
+    {
+        static Application app;
+        return app;
+    }
+
     virtual ~Application() = default;
 
 public:
@@ -34,7 +40,7 @@ public:
     void PushOverlay(Layer *overlay);
 
 public:
-    [[nodiscard]] Window &GetWindow() const { return *m_Window.get(); }
+    [[nodiscard]] Window &GetWindow() const noexcept { return *m_Window.get(); }
     void SetIsRunning(bool isRun) noexcept { m_IsRunning = isRun; }
 
 public:

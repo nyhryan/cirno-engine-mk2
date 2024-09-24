@@ -15,7 +15,7 @@ public:
     ~LayerStack();
 
 public:
-    void PushLayer(Layer * layer);
+    void PushLayer(Layer *layer);
     void PopLayer(Layer * layer);
 
     void PushOverlay(Layer * overlay);
